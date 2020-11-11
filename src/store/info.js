@@ -13,6 +13,20 @@ export default {
     }
   },
   actions: {
+    async updateInfo({ dispatch, commit, getters }, toUpdate) {
+      try {
+        const uid = await dispatch("getUid");
+        const updateData = { ...getters.info, ...toUpdate };
+        await firebase
+          .database()
+          .ref(`/users/${uid}/info`)
+          .update(toUpdate);
+        commit("setInfo", updateData);
+      } catch (e) {
+        commit("setError", e);
+        throw e;
+      }
+    },
     async fetchInfo({ dispatch, commit }) {
       try {
         const uid = await dispatch("getUid");
@@ -23,8 +37,10 @@ export default {
             .once("value")
         ).val();
         commit("setInfo", info);
-        // eslint-disable-next-line no-empty
-      } catch (e) {}
+      } catch (e) {
+        commit("setError", e);
+        throw e;
+      }
     }
   },
   getters: {
