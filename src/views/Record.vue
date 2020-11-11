@@ -103,12 +103,13 @@ export default {
     categories: [],
     current: null,
     type: "outcome",
-    amount: 1,
+    amount: "",
     description: ""
   }),
+  /* Минимальное допустимое значение */
   validations: {
     description: { required },
-    amount: { minValue: minValue(1) }
+    amount: { minValue: minValue(100) }
   },
   computed: {
     ...mapGetters(["info"]),
@@ -144,8 +145,10 @@ export default {
           await this.$store.dispatch("updateInfo", { bill });
           this.$message("Запись успешно создана");
           this.$v.reset();
-          this.amount = 1;
+          /*Не нравится magicNumber=1, нужно убрать*/
+          this.amount = "";
           this.description = "";
+          // Добавить что-то в catch
           // eslint-disable-next-line no-empty
         } catch (e) {}
       } else {

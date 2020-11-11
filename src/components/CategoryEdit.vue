@@ -97,6 +97,7 @@ export default {
         await this.$store.dispatch("updateCategory", categoryData);
         this.$message("Категория успешно обновлена");
         this.$emit("updated", categoryData);
+        // Добавить что-то в catch
         // eslint-disable-next-line no-empty
       } catch (e) {}
     }
