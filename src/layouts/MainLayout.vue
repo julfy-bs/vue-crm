@@ -1,9 +1,11 @@
 <template>
   <div class="app-main-layout">
     <Navbar @burgerClick="isOpen = !isOpen" />
-    <Sidebar v-model="isOpen" />
+    <Sidebar v-model="isOpen" :key="locale" />
 
-    <main class="app-content" :class="{ full: !isOpen }">
+    <Loader class="load" v-if="loading" />
+
+    <main v-else class="app-content" :class="{ full: !isOpen }">
       <div class="app-page">
         <router-view />
       </div>
@@ -24,12 +26,14 @@ import messages from "@/utils/messages";
 export default {
   name: "main-layout",
   data: () => ({
-    isOpen: true
+    isOpen: true,
+    loading: true
   }),
   async mounted() {
     if (!Object.keys(this.$store.getters.info).length) {
       await this.$store.dispatch("fetchInfo");
     }
+    this.loading = false;
   },
   components: {
     Sidebar,
@@ -38,6 +42,9 @@ export default {
   computed: {
     error() {
       return this.$store.getters.error;
+    },
+    locale() {
+      return this.$store.getters.info.locale;
     }
   },
   watch: {
@@ -47,3 +54,10 @@ export default {
   }
 };
 </script>
+<style scoped>
+.load {
+  position: absolute;
+  top: 10%;
+  left: 0;
+}
+</style>

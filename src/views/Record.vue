@@ -2,14 +2,16 @@
   <div class="app-page">
     <div>
       <div class="page-title">
-        <h3>Новая запись</h3>
+        <h3>{{ "SIDEBAR-MENU_NewRecord" | localize }}</h3>
       </div>
 
       <Loader v-if="loading" />
 
       <p class="center" v-else-if="!categories.length">
-        Категорий пока нет.
-        <router-link to="/categories">Добавить новую категорию</router-link>
+        {{ "EMPTY_NoCategories" | localize }}
+        <router-link to="/categories">
+          {{ "EMPTY_AddCategory" | localize }}
+        </router-link>
       </p>
 
       <form class="form" v-else @submit.prevent="submitHandler">
@@ -19,7 +21,7 @@
               >{{ c.title }}
             </option>
           </select>
-          <label>Выберите категорию</label>
+          <label>{{ "MESSAGE_SelectCategory" | localize }}</label>
         </div>
 
         <p>
@@ -31,7 +33,7 @@
               type="radio"
               value="income"
             />
-            <span>Доход</span>
+            <span> {{ "Income" | localize }}</span>
           </label>
         </p>
 
@@ -44,7 +46,7 @@
               type="radio"
               value="outcome"
             />
-            <span>Расход</span>
+            <span>{{ "Outcome" | localize }}</span>
           </label>
         </p>
 
@@ -55,12 +57,12 @@
             type="number"
             :class="{ invalid: $v.amount.$dirty && !$v.amount.minValue }"
           />
-          <label for="amount">Сумма</label>
+          <label for="amount">{{ "Total" | localize }}</label>
           <span
             class="helper-text invalid"
             v-if="$v.amount.$dirty && !$v.amount.minValue"
           >
-            Минимальное значение должно быть
+            {{ "ERROR_MinLength" | localize }}
             {{ $v.amount.$params.minValue.min }}
           </span>
         </div>
@@ -74,17 +76,17 @@
               invalid: $v.description.$dirty && !$v.description.required
             }"
           />
-          <label for="description">Описание</label>
+          <label for="description">{{ "Description" | localize }}</label>
           <span
             class="helper-text invalid"
             v-if="$v.description.$dirty && !$v.description.required"
           >
-            Введите описание
+            {{ "ERROR_Required" | localize }}
           </span>
         </div>
 
         <button class="btn waves-effect waves-light" type="submit">
-          Создать
+          {{ "BUTTON_Create" | localize }}
           <i class="material-icons right">send</i>
         </button>
       </form>
@@ -97,6 +99,11 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "Record",
+  metaInfo() {
+    return {
+      title: this.$title("PageTitle_Record")
+    };
+  },
   data: () => ({
     loading: true,
     select: null,

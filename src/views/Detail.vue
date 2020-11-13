@@ -24,7 +24,7 @@
               </p>
               <p class="flex">
                 <span>Сумма:</span>
-                <span>{{ record.amount }}</span>
+                <span>{{ record.amount | currency("RUB") }}</span>
               </p>
               <p class="flex">
                 <span>Категория:</span>
@@ -44,6 +44,11 @@
 <script>
 export default {
   name: "Detail",
+  metaInfo() {
+    return {
+      title: this.$title("PageTitle_Detail")
+    };
+  },
   data: () => ({
     record: null,
     loading: true

@@ -2,7 +2,7 @@
   <div class="col s12 m6">
     <div>
       <div class="page-subtitle">
-        <h4>Создать</h4>
+        <h4>{{ "BUTTON_Create" | localize }}</h4>
       </div>
       <form @submit.prevent="submitHandler">
         <div class="input-field">
@@ -12,12 +12,12 @@
             v-model="title"
             :class="{ invalid: $v.title.$dirty && !$v.title.required }"
           />
-          <label for="name">Название</label>
+          <label for="name">{{ "SomethingName" | localize }}</label>
           <span
             class="helper-text invalid"
             v-if="$v.title.$dirty && !$v.title.required"
           >
-            Введите название категории
+            {{ "MESSAGE_EnterCategoryName" | localize }}
           </span>
         </div>
         <div class="input-field">
@@ -27,16 +27,17 @@
             v-model.number="limit"
             :class="{ invalid: $v.limit.$dirty && !$v.limit.minValue }"
           />
-          <label for="limit">Лимит</label>
+          <label for="limit">{{ "Limit" | localize }}</label>
           <span
             class="helper-text invalid"
             v-if="$v.limit.$dirty && !$v.limit.minValue"
           >
-            Минимальная значение должно быть {{ $v.limit.$params.minValue.min }}
+            {{ "ERROR_MinLength" | localize }}
+            {{ $v.limit.$params.minValue.min }}
           </span>
         </div>
         <button class="btn waves-effect waves-light" type="submit">
-          Создать
+          {{ "BUTTON_Create" | localize }}
           <i class="material-icons right">send</i>
         </button>
       </form>
@@ -46,18 +47,16 @@
 
 <script>
 import { required, minValue } from "vuelidate/lib/validators";
+import localizeFilter from "@/filters/localize.filter";
 
 export default {
   data: () => ({
     title: "",
-    limit: 1
+    limit: ""
   }),
   validations: {
     title: { required },
     limit: { minValue: minValue(100) }
-  },
-  mounted() {
-    window.M.updateTextFields();
   },
   methods: {
     async submitHandler() {
@@ -74,10 +73,15 @@ export default {
         this.limit = "";
         this.$v.reset();
         this.$emit("created", category);
-        this.$message("Категория была создана");
+        this.$message(
+          localizeFilter("ANNOUNCEMENT_CategoryCreatedSuccessfully")
+        );
         // eslint-disable-next-line no-empty
       } catch (e) {}
     }
+  },
+  mounted() {
+    window.M.updateTextFields();
   }
 };
 </script>

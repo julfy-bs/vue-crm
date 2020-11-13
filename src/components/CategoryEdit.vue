@@ -2,7 +2,7 @@
   <div class="col s12 m6">
     <div>
       <div class="page-subtitle">
-        <h4>Редактировать</h4>
+        <h4>{{ "Edit" | localize }}</h4>
       </div>
 
       <form @submit.prevent="submitHandler">
@@ -12,7 +12,7 @@
               >{{ c.title }}
             </option>
           </select>
-          <label>Выберите категорию</label>
+          <label>{{ "MESSAGE_SelectCategory" | localize }}</label>
         </div>
 
         <div class="input-field">
@@ -22,12 +22,12 @@
             v-model="title"
             :class="{ invalid: $v.title.$dirty && !$v.title.required }"
           />
-          <label for="name">Название</label>
+          <label for="name">{{ "SomethingName" | localize }}</label>
           <span
             class="helper-text invalid"
             v-if="$v.title.$dirty && !$v.title.required"
           >
-            Введите название категории
+            {{ "MESSAGE_EnterCategoryName" | localize }}
           </span>
         </div>
 
@@ -36,19 +36,30 @@
             id="limit"
             type="number"
             v-model.number="limit"
-            :class="{ invalid: $v.limit.$dirty && !$v.limit.minValue }"
+            :class="{
+              invalid:
+                ($v.limit.$dirty && !$v.limit.minValue) ||
+                ($v.limit.$dirty && !$v.limit.required)
+            }"
           />
-          <label for="limit">Лимит</label>
+          <label for="limit">{{ "Limit" | localize }}</label>
+          <small
+            class="helper-text invalid"
+            v-if="$v.limit.$dirty && !$v.limit.required"
+          >
+            {{ "ERROR_RequiredNumber" | localize }}
+          </small>
           <span
             class="helper-text invalid"
             v-if="$v.limit.$dirty && !$v.limit.minValue"
           >
-            Минимальное значение должно быть {{ $v.limit.$params.minValue.min }}
+            {{ "ERROR_MinLength" | localize }}
+            {{ $v.limit.$params.minValue.min }}
           </span>
         </div>
 
         <button class="btn waves-effect waves-light" type="submit">
-          Обновить
+          {{ "BUTTON_Update" | localize }}
           <i class="material-icons right">send</i>
         </button>
       </form>
@@ -57,6 +68,7 @@
 </template>
 <script>
 import { minValue, required } from "vuelidate/lib/validators";
+import localizeFilter from "@/filters/localize.filter";
 
 export default {
   props: {
@@ -73,7 +85,7 @@ export default {
   }),
   validations: {
     title: { required },
-    limit: { minValue: minValue(100) }
+    limit: { minValue: minValue(100), required }
   },
   watch: {
     current(catId) {
@@ -95,7 +107,9 @@ export default {
           limit: this.limit
         };
         await this.$store.dispatch("updateCategory", categoryData);
-        this.$message("Категория успешно обновлена");
+        this.$message(
+          localizeFilter("ANNOUNCEMENT_CategoryUpdatedSuccessfully")
+        );
         this.$emit("updated", categoryData);
         // Добавить что-то в catch
         // eslint-disable-next-line no-empty
